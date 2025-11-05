@@ -55,7 +55,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>br.com.lipescript.api.ApiApplication</mainClass>
+                        <mainClass>br.com.lipescript.TopKApiApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

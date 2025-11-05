@@ -1,4 +1,4 @@
-package br.com.lipescript.system_design_features.spotify_top_k_songs;
+package br.com.lipescript.topkfeature.spotify_top_k_songs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,3 +1,29 @@
 spring:
+  config:
+    activate:
+      on-profile: default
   application:
-    name: Top K Songs API
+    name: spotify-top-k-songs-api
+
+  server:
+    port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  logging:
+    level:
+      org.springframework.kafka: DEBUG
+      br.com.lipescript: DEBUG

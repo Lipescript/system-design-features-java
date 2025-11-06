@@ -1,13 +1,13 @@
-package br.com.lipescript.topkfeature.spotify_top_k_songs;
+package br.com.lipescript;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TopKSongsExampleApplication {
+public class TopKConsumerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TopKSongsExampleApplication.class, args);
+		SpringApplication.run(TopKConsumerApplication.class, args);
 	}
 
 }

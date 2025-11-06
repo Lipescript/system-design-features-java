@@ -1,3 +1,44 @@
 spring:
+  config:
+    activate:
+      on-profile: default
   application:
-    name: Top K Songs Consumer
+    name: spotify-top-k-songs-consumer
+
+  server:
+    port: 8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+      include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+  # Kafka Config
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: spotify-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        # Performance optimizations
+        fetch.min.bytes: 1
+        fetch.max.wait.ms: 500
+        max.poll.records: 50
+        heartbeat.interval.ms: 3000
+        session.timeout.ms: 10000
+
+  # Cassandra Config
+  cassandra:
+    keyspace-name: spotify_keyspace
+    contact-points: localhost
+    port: 9042
+    local-datacenter: datacenter1
+    schema-action: CREATE_IF_NOT_EXISTS
+    session-name: spotify-session

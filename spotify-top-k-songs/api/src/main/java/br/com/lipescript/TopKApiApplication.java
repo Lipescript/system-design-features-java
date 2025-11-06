@@ -9,5 +9,4 @@ public class TopKApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TopKApiApplication.class, args);
 	}
-
 }

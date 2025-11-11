@@ -1,4 +1,10 @@
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 2
+  jackson:
+    time-zone: America/Sao_Paulo
   config:
     activate:
       on-profile: default
@@ -20,6 +26,8 @@ management:
 
   # Kafka Config
   kafka:
+    topics:
+      songs-listened: songs-listened-topic
     bootstrap-servers: localhost:9092
     consumer:
       group-id: spotify-group

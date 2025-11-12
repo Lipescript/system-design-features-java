@@ -132,9 +132,9 @@ public class TopKService {
   private List<SongRank> getTopKFromCassandra(int limit, long timeInSeconds) {
     try {
       String cql =
-          "SELECT song_id, song_name, artist, play_count "
-              + "FROM song_plays WHERE time_bucket = ? "
-              + "ORDER BY play_count DESC LIMIT ?";
+          "SELECT song_id, song_name, artist, listened_count "
+              + "FROM song_listened WHERE time_bucket = ? "
+              + "ORDER BY listened_count DESC LIMIT ?";
 
       return cqlTemplate.query(
           cql,
@@ -143,9 +143,9 @@ public class TopKService {
                   row.getString("song_id"),
                   row.getString("song_name"),
                   row.getString("artist"),
-                  row.getLong("play_count"),
+                  row.getLong("listened_count"),
                   rowNum + 1,
-                  generateCursor(row.getString("song_id"), row.getLong("play_count"))),
+                  generateCursor(row.getString("song_id"), row.getLong("listened_count"))),
           getCassandraTimeBucket(timeInSeconds),
           limit);
     } catch (Exception e) {

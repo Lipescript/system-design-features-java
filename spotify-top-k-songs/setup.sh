@@ -41,7 +41,7 @@ USE spotify_keyspace;
 CREATE TABLE IF NOT EXISTS top_songs (
     time_window timestamp,
     song_id text,
-    play_count counter,
+    listened_count counter,
     PRIMARY KEY (time_window, song_id)
 );
 

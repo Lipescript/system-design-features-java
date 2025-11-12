@@ -2,7 +2,7 @@ package br.com.lipescript.service;
 
 public class TimeConstants {
 
-    private TimeConstants() {}
+  private TimeConstants() {}
 
   public static final int SECOND = 1;
   public static final int MINUTE = 60;

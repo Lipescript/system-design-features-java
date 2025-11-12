@@ -5,19 +5,24 @@ WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 -- Use keyspace
 USE spotify_keyspace;
 
--- Table for top songs
-CREATE TABLE IF NOT EXISTS top_songs (
-    time_window timestamp,
+-- Table for storing top songs by time window
+CREATE TABLE IF NOT EXISTS top_songs_by_window (
+    time_window_type text,        -- 'minute', 'hour', 'day', 'month'
+    time_bucket text,             -- Formatted time bucket (e.g., '202311121445')
     song_id text,
+    song_name text,
+    artist text,
     play_count counter,
-    PRIMARY KEY (time_window, song_id)
-);
+    last_updated timestamp,
+    PRIMARY KEY ((time_window_type, time_bucket), song_id)
+) WITH CLUSTERING ORDER BY (song_id ASC);
 
--- Table for play events
+-- Table for individual song plays (if needed for detailed analytics)
 CREATE TABLE IF NOT EXISTS song_plays (
-    event_id timeuuid,
     song_id text,
+    event_time timestamp,
     user_id text,
-    timestamp timestamp,
-    PRIMARY KEY (song_id, timestamp)
-) WITH CLUSTERING ORDER BY (timestamp DESC);
+    song_name text,
+    artist text,
+    PRIMARY KEY (song_id, event_time)
+) WITH CLUSTERING ORDER BY (event_time DESC);

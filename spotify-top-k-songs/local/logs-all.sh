@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# logs.sh - View logs for services
+# logs-all.sh - View logs for services
 
 SERVICE="$1"
 

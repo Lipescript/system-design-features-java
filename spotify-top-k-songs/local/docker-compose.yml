@@ -27,38 +27,9 @@ services:
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
       KAFKA_JVM_PERFORMANCE_OPTS: "-XX:+UseG1GC -XX:MaxGCPauseMillis=20"
       KAFKA_LOG_RETENTION_HOURS: "24"
-      KAFKA_LOG_SEGMENT_BYTES: "104857600"  # 100MB
+      KAFKA_LOG_SEGMENT_BYTES: "104857600"
       KAFKA_NUM_PARTITIONS: "1"
       KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: "300000"
-    restart: unless-stopped
-
-  redis:
-    image: redis:7.2-alpine
-    mem_limit: 64m
-    cpus: 0.3
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-
-  cassandra:
-    image: cassandra:5.0
-    mem_limit: 768m
-    cpus: 1.0
-    ports:
-      - "9042:9042"
-    environment:
-      CASSANDRA_CLUSTER_NAME: "TestCluster"
-      # Otimizações JVM
-      MAX_HEAP_SIZE: "512M"
-      HEAP_NEWSIZE: "128M"
-      JVM_OPTS: "-Xmx384m -Xms128m -XX:+UseG1GC"
-      CASSANDRA_NUM_TOKENS: "1"
-      CASSANDRA_ENDPOINT_SNITCH: "SimpleSnitch"
-    healthcheck:
-      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     restart: unless-stopped
 
   kafka-ui:
@@ -78,6 +49,10 @@ services:
       - kafka
     restart: unless-stopped
 
-networks:
-  default:
-    driver: bridge
+  redis:
+    image: redis:7.2-alpine
+    mem_limit: 64m
+    cpus: 0.3
+    ports:
+      - "6379:6379"
+    restart: unless-stopped

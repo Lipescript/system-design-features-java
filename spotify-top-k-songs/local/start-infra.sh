@@ -22,13 +22,9 @@ docker system prune -f
 echo "🚀 Starting optimized Kafka, Redis, Cassandra..."
 docker-compose up -d zookeeper kafka redis cassandra kafka-ui
 
-# Wait for services to be ready (reduced wait time due to optimizations)
-echo "⏳ Waiting for services to initialize (optimized startup)..."
-sleep 10
-
 # Initialize Cassandra
 echo "📊 Initializing Cassandra..."
-if [ -f "scripts/init-cassandra.cql" ]; then
+if [ -f "init-cassandra.cql" ]; then
     MAX_WAIT=180
     INTERVAL=5
     elapsed=0
@@ -67,15 +63,15 @@ if [ -f "scripts/init-cassandra.cql" ]; then
         fi
     done
 
-    echo "➡️ Applying CQL from scripts/init-cassandra.cql..."
-    if ! docker exec -i "$CID" cqlsh < scripts/init-cassandra.cql >/dev/null 2>&1; then
+    echo "➡️ Applying CQL from init-cassandra.cql..."
+    if ! docker exec -i "$CID" cqlsh < init-cassandra.cql >/dev/null 2>&1; then
         echo "❌ Failed applying CQL. Last cassandra logs:"
         docker logs "$CID" 2>&1 | tail -n 100
         exit 1
     fi
     echo "✅ Cassandra initialized successfully"
 else
-    echo "⚠️  Cassandra initialization script not found (scripts/init-cassandra.cql)"
+    echo "⚠️  Cassandra initialization script not found (init-cassandra.cql)"
     echo "💡 Creating basic keyspace for testing..."
 
     CID=$(docker-compose ps -q cassandra)

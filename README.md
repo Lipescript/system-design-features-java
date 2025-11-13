@@ -57,10 +57,10 @@ Big kudos to NeetCodeIO for inspiring me to create this project based on his rec
 ./scripts/start-infra.sh
 
 # Start applications
-./scripts/start-apps.sh
+./scripts/run-spotify-topk.sh
 
 # Check service status
-./scripts/status.sh
+./scripts/health-check.sh
 ```
 
 ## 📈 Monitoring & Debugging

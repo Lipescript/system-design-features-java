@@ -1,5 +1,5 @@
 #!/bin/bash
-# health-check.sh - Check optimized infrastructure health
+# health-check-infra-apps.sh - Check optimized infrastructure health
 
 echo "🔍 Health Check - Optimized Infrastructure"
 

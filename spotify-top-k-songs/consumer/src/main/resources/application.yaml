@@ -1,4 +1,9 @@
 spring:
+  autoconfigure:
+    exclude:
+      ## Temporary due Cassandra issues
+      - org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration
   task:
     scheduling:
       pool:
@@ -11,55 +16,51 @@ spring:
   application:
     name: spotify-top-k-songs-consumer
 
-  server:
-    port: 8084
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: MANUAL
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      group-id: kafka-app-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.poll.interval.ms: 30000
+        request.timeout.ms: 10000
+        session.timeout.ms: 10000
+        fetch.min.bytes: 1
+        fetch.max.wait.ms: 500
+        max.poll.records: 50
+        heartbeat.interval.ms: 3000
+
+  data:
+    cassandra:
+      keyspace-name: spotify_keyspace
+      contact-points: localhost
+      port: 9042
+      local-datacenter: datacenter1
+      schema-action: CREATE_IF_NOT_EXISTS
+      session-name: spotify-session
+
+server:
+  port: 8084
 
 management:
   endpoints:
     web:
       exposure:
-      include: health,info,metrics
+        include: health,info,metrics
   endpoint:
     health:
-      show-details: always
-      show-components: always
+      enabled: true
+    info:
+      enabled: true
+    metrics:
+      enabled: true
 
-  # Kafka Config
-  kafka:
-    listener:
-      ack-mode: MANUAL_IMMEDIATE
-      retry:
-        enabled: true
-        max-attempts: 3  # 1 initial attempt + 2 retries
-        backoff:
-          initial-interval: 1000  # 1 second
-          multiplier: 2
-          max-interval: 10000  # 10 seconds max interval
-          random-ratio: 0.5  # Add some randomness to avoid thundering herd
-    consumer:
-      enable-auto-commit: false
-      auto-offset-reset: earliest
-      group-id: spotify-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        # Existing properties
-        max.poll.interval.ms: 30000  # 30 seconds max poll interval
-        request.timeout.ms: 10000    # 10 seconds request timeout
-        session.timeout.ms: 10000    # 10 seconds session timeout
-        fetch.min.bytes: 1
-        fetch.max.wait.ms: 500
-        max.poll.records: 50
-        heartbeat.interval.ms: 3000
-    topics:
-      songs-listened: songs-listened-topic
-    bootstrap-servers: localhost:9092
-
-  # Cassandra Config
-  cassandra:
-    keyspace-name: spotify_keyspace
-    contact-points: localhost
-    port: 9042
-    local-datacenter: datacenter1
-    schema-action: CREATE_IF_NOT_EXISTS
-    session-name: spotify-session
+# Custom properties (if needed) - these can stay at root level
+kafka:
+  topics:
+    songs-listened: songs-listened-topic

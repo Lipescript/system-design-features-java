@@ -36,7 +36,7 @@ public record SongListenedEvent(
       throw new InvalidEventDataException("Timestamp required");
     }
 
-    if (!songId.matches("^[A-Za-z0-9]{22}$")) {
+    if (!songId.matches("^[A-Za-z0-9]{16}$")) {
       throw new InvalidEventDataException("Invalid Song ID format");
     }
   }

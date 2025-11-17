@@ -1,5 +1,6 @@
 package br.com.lipescript.snapshot;
 
+import br.com.lipescript.exception.ExternalDataServicesException;
 import br.com.lipescript.model.SongListenedCassandra;
 import br.com.lipescript.model.SongListenedEvent;
 import java.time.Instant;
@@ -54,7 +55,7 @@ public class SnapshotService {
 
     } catch (Exception e) {
       logger.severe("Failed to update Redis counters: " + e.getMessage());
-      throw new RuntimeException("Redis update failed", e);
+      throw new ExternalDataServicesException("Redis update failed", e);
     }
   }
 

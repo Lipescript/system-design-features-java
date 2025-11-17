@@ -1,8 +1,10 @@
 package br.com.lipescript.consumer;
 
+import br.com.lipescript.exception.ExternalDataServicesException;
 import br.com.lipescript.exception.InvalidEventDataException;
 import br.com.lipescript.model.SongListenedEvent;
 import br.com.lipescript.snapshot.SnapshotService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.logging.Logger;
@@ -50,13 +52,19 @@ public class SongListennedConsumer {
               "Processing Song Played [Key: %s, Song: %s - %s] at %s",
               key, event.artist(), event.songName(), event.timestamp()));
 
-      //TODO Redis block
+      // TODO Redis block
       snapshot.processEvent(event);
       ack.acknowledge();
 
-    } catch (ListenerExecutionFailedException | InvalidEventDataException e) {
+    } catch (JsonProcessingException
+        | ListenerExecutionFailedException
+        | InvalidEventDataException e) {
       logger.info(String.format("Data validation failure: %s", e.getMessage()));
       ack.acknowledge();
+    } catch (ExternalDataServicesException e) {
+      logger.severe("Processing error for key " + key + ": " + e.getMessage());
+      throw new RuntimeException("Processing failure for key " + key + ": " + e.getMessage());
+
     } catch (Exception e) {
       logger.severe("Processing error for key " + key + ": " + e.getMessage());
       throw new RuntimeException("Processing failure for key " + key + ": " + e.getMessage());

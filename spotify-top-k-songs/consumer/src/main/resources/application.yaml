@@ -1,9 +1,4 @@
 spring:
-  autoconfigure:
-    exclude:
-      ## Temporary due Cassandra issues
-      - org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration
   task:
     scheduling:
       pool:
@@ -40,9 +35,11 @@ spring:
       keyspace-name: spotify_keyspace
       contact-points: localhost
       port: 9042
-      local-datacenter: datacenter1
+      local-datacenter: spotify_charts_musics_listened
       schema-action: CREATE_IF_NOT_EXISTS
       session-name: spotify-session
+      username: cassandra
+      password: cassandra
 
 server:
   port: 8084

@@ -52,8 +52,8 @@ public class SongListennedConsumer {
               "Processing Song Played [Key: %s, Song: %s - %s] at %s",
               key, event.artist(), event.songName(), event.timestamp()));
 
-      // TODO Redis block
       snapshot.processEvent(event);
+
       ack.acknowledge();
 
     } catch (JsonProcessingException
@@ -61,6 +61,7 @@ public class SongListennedConsumer {
         | InvalidEventDataException e) {
       logger.info(String.format("Data validation failure: %s", e.getMessage()));
       ack.acknowledge();
+
     } catch (ExternalDataServicesException e) {
       logger.severe("Processing error for key " + key + ": " + e.getMessage());
       throw new RuntimeException("Processing failure for key " + key + ": " + e.getMessage());

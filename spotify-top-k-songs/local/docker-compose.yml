@@ -56,3 +56,20 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+
+  cassandra:
+    image: cassandra:3.11.14
+    container_name: cassandra-spotify
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=spotify-cluster
+      - MAX_HEAP_SIZE=128M
+      - HEAP_NEWSIZE=32M
+    mem_limit: 512m
+    memswap_limit: 768m
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+
+volumes:
+  cassandra_data:

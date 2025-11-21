@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,9 @@ public class SnapshotService {
   private String timeZone;
 
   private static final Logger logger = Logger.getLogger(SnapshotService.class.getName());
+
   private final RedisTemplate<String, String> redisTemplate;
+  private final CassandraTemplate cassandraTemplate;
 
   private static final DateTimeFormatter MINUTE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyyMMddHHmm");
@@ -30,8 +33,10 @@ public class SnapshotService {
   private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
   private static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
 
-  public SnapshotService(RedisTemplate<String, String> redisTemplate) {
+  public SnapshotService(
+      RedisTemplate<String, String> redisTemplate, CassandraTemplate cassandraTemplate) {
     this.redisTemplate = redisTemplate;
+    this.cassandraTemplate = cassandraTemplate;
   }
 
   /** Processes an event and updates Redis + prepares snapshot for Cassandra */
@@ -51,7 +56,7 @@ public class SnapshotService {
       updateTimeWindow(event, dateTime, "day", DAY_FORMATTER, 30 * 24 * 60);
       updateTimeWindow(event, dateTime, "month", MONTH_FORMATTER, 365 * 24 * 60);
 
-      logger.info("Updated Redis counters for song: " + event.songId());
+      logger.info("✅ Updated Redis counters for song: " + event.songId());
 
     } catch (Exception e) {
       logger.severe("Failed to update Redis counters: " + e.getMessage());
@@ -142,10 +147,9 @@ public class SnapshotService {
                   + "  AND time_bucket = ? "
                   + "  AND song_id = ?";
 
-          //          cassandraTemplate
-          //              .getCqlOperations()
-          //              .execute(cql, count, songName, artist, snapshotTime, "minute", timeBucket,
-          // songId);
+          cassandraTemplate
+              .getCqlOperations()
+              .execute(cql, count, songName, artist, snapshotTime, "minute", timeBucket, songId);
         }
       }
       logger.info(
